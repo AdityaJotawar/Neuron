@@ -35,9 +35,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.11",
@@ -52,7 +50,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@playwright/test": "^1.40.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/jest-dom": "^6.1.0",
     "@testing-library/react": "^14.0.0",
