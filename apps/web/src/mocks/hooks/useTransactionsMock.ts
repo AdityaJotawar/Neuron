@@ -93,7 +93,7 @@ export function useCreateTransaction() {
     return useMutation({
         mutationFn: async (transaction: Omit<Transaction, 'id' | 'createdAt'>) => {
             await delay()
-            const newTransaction: Transaction = { ...transaction, id: `mock-${Date.now()}`, createdAt: new Date() }
+            const newTransaction: Transaction = { ...transaction, userId: 'mock-user', id: `mock-${Date.now()}`, createdAt: new Date() }
             mockTransactions.push(newTransaction)
             return newTransaction
         },
@@ -148,7 +148,6 @@ export function useDeleteImport() {
         mutationFn: async (importId: string) => {
             await delay()
             for (let i = mockTransactions.length - 1; i >= 0; i--) {
-                // @ts-ignore - importId may not be in base Transaction type
                 if (mockTransactions[i].importId === importId) mockTransactions.splice(i, 1)
             }
         },

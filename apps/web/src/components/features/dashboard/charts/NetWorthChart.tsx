@@ -1,6 +1,7 @@
 
 import { TrendingUp, BarChart3 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card'
+import Select from '@/components/ui/Select'
 import {
     BarChart,
     Bar,
@@ -50,15 +51,15 @@ export default function NetWorthChart({
                         <CardTitle>Net Worth Trend</CardTitle>
                         <CardDescription>Last {netWorthTimeRange === '12M' ? '12' : netWorthTimeRange === '6M' ? '6' : '3'} months</CardDescription>
                     </div>
-                    <select
+                    <Select
                         value={netWorthTimeRange}
-                        onChange={(e) => setNetWorthTimeRange(e.target.value)}
-                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    >
-                        <option value="3M">3 Months</option>
-                        <option value="6M">6 Months</option>
-                        <option value="12M">12 Months</option>
-                    </select>
+                        onChange={setNetWorthTimeRange}
+                        options={[
+                            { value: '3M', label: '3 Months' },
+                            { value: '6M', label: '6 Months' },
+                            { value: '12M', label: '12 Months' },
+                        ]}
+                    />
                     <div className="flex bg-slate-100 rounded-lg p-1 ml-2">
                         <button
                             onClick={() => setShowForecast(!showForecast)}

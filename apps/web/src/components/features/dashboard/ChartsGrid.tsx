@@ -26,16 +26,16 @@ interface ChartsGridProps {
     netWorthTimeRange: string
     netWorthChartType: 'area' | 'bar'
     showForecast: boolean
-    setNetWorthTimeRange: (range: string) => void
-    setNetWorthChartType: (type: 'area' | 'bar') => void
-    setShowForecast: (show: boolean) => void
+    onNetWorthTimeRangeChange: (range: string) => void
+    onNetWorthChartTypeChange: (type: 'area' | 'bar') => void
+    onForecastToggle: () => void
     assetAllocationData: any[]
     monthlyExpensesData: any[]
     filteredPortfolioData: PortfolioData[]
     portfolioTimeRange: string
     portfolioChartType: 'line' | 'bar'
-    setPortfolioTimeRange: (range: string) => void
-    setPortfolioChartType: (type: 'line' | 'bar') => void
+    onPortfolioTimeRangeChange: (range: string) => void
+    onPortfolioChartTypeChange: (type: 'line' | 'bar') => void
 }
 
 export default function ChartsGrid({
@@ -44,16 +44,16 @@ export default function ChartsGrid({
     netWorthTimeRange,
     netWorthChartType,
     showForecast,
-    setNetWorthTimeRange,
-    setNetWorthChartType,
-    setShowForecast,
+    onNetWorthTimeRangeChange,
+    onNetWorthChartTypeChange,
+    onForecastToggle,
     assetAllocationData,
     monthlyExpensesData,
     filteredPortfolioData,
     portfolioTimeRange,
     portfolioChartType,
-    setPortfolioTimeRange,
-    setPortfolioChartType
+    onPortfolioTimeRangeChange,
+    onPortfolioChartTypeChange
 }: ChartsGridProps) {
     // Check if any charts are visible
     const hasVisibleCharts = visibleWidgets.netWorth || visibleWidgets.allocation || visibleWidgets.expenses || visibleWidgets.portfolio
@@ -68,9 +68,9 @@ export default function ChartsGrid({
                 netWorthTimeRange={netWorthTimeRange}
                 netWorthChartType={netWorthChartType}
                 showForecast={showForecast}
-                setNetWorthTimeRange={setNetWorthTimeRange}
-                setNetWorthChartType={setNetWorthChartType}
-                setShowForecast={setShowForecast}
+                onNetWorthTimeRangeChange={onNetWorthTimeRangeChange}
+                onNetWorthChartTypeChange={onNetWorthChartTypeChange}
+                onForecastToggle={onForecastToggle}
             />
 
             <AssetAllocationChart
@@ -88,8 +88,8 @@ export default function ChartsGrid({
                 filteredPortfolioData={filteredPortfolioData}
                 portfolioTimeRange={portfolioTimeRange}
                 portfolioChartType={portfolioChartType}
-                setPortfolioTimeRange={setPortfolioTimeRange}
-                setPortfolioChartType={setPortfolioChartType}
+                onPortfolioTimeRangeChange={onPortfolioTimeRangeChange}
+                onPortfolioChartTypeChange={onPortfolioChartTypeChange}
             />
         </div>
     )

@@ -1,6 +1,7 @@
 
 import { BarChart3, LineChart as LineChartIcon } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card'
+import Select from '@/components/ui/Select'
 import {
     BarChart,
     Bar,
@@ -46,15 +47,15 @@ export default function PortfolioPerformanceChart({
                         <CardDescription>Last {portfolioTimeRange === '12M' ? '12' : portfolioTimeRange === '6M' ? '6' : '3'} months</CardDescription>
                     </div>
                     <div className="flex items-center gap-4">
-                        <select
+                        <Select
                             value={portfolioTimeRange}
-                            onChange={(e) => setPortfolioTimeRange(e.target.value)}
-                            className="px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        >
-                            <option value="12M">12 Months</option>
-                            <option value="6M">6 Months</option>
-                            <option value="3M">3 Months</option>
-                        </select>
+                            onChange={setPortfolioTimeRange}
+                            options={[
+                                { value: '12M', label: '12 Months' },
+                                { value: '6M', label: '6 Months' },
+                                { value: '3M', label: '3 Months' },
+                            ]}
+                        />
                         <span className="text-2xl font-semibold text-emerald-600 font-mono">+18.3%</span>
                         <div className="flex bg-slate-100 rounded-lg p-1">
                             <button

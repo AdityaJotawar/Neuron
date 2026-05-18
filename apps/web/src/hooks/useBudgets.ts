@@ -7,7 +7,7 @@ export function useBudgets() {
     return useQuery({
         queryKey: QUERY_KEYS.budgets,
         queryFn: async () => {
-            const client = await createApiClient('real')
+            const client = await createApiClient()
             const res = await client.getBudgets()
             return res.data
         },

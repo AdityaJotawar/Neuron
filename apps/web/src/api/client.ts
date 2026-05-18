@@ -29,6 +29,9 @@ export interface ApiClient {
     getTransaction(id: string): Promise<ApiResponse<Transaction>>
     createTransaction(transaction: Omit<Transaction, 'id'>): Promise<ApiResponse<Transaction>>
     updateTransaction(id: string, updates: Partial<Transaction>): Promise<ApiResponse<Transaction>>
+    deleteTransaction(id: string): Promise<ApiResponse<void>>
+    bulkCreateTransactions(transactions: Array<Omit<Transaction, 'id'>>): Promise<ApiResponse<Transaction[]>>
+    bulkDeleteTransactions(ids: string[]): Promise<ApiResponse<void>>
 
     // Budgets
     getBudgets(): Promise<ApiResponse<Budget[]>>
@@ -40,15 +43,21 @@ export interface ApiClient {
     getStockHoldings(): Promise<ApiResponse<StockHolding[]>>
     getPortfolioStats(): Promise<ApiResponse<PortfolioStats>>
 
+    // Data Import/Export
+    uploadCSV(file: File): Promise<ApiResponse<{ importId: string; previewData: Transaction[] }>>
+    deleteImport(importId: string): Promise<ApiResponse<void>>
+
     // AI Chat (future implementation)
     sendChatMessage(message: string, sessionId?: string): Promise<ApiResponse<any>>
 }
 
 // Factory function to create API client
-export async function createApiClient(mode: 'mock' | 'real' = 'mock'): Promise<ApiClient> {
+export async function createApiClient(): Promise<ApiClient> {
+    const mode = import.meta.env.VITE_API_MODE ?? 'mock'
+    
     if (mode === 'real') {
-        // Future: return real API client
-        throw new Error('Real API client not implemented yet')
+        const { createRealApiClient } = await import('./real/client')
+        return createRealApiClient()
     }
 
     // Import mock client dynamically to avoid bundling issues

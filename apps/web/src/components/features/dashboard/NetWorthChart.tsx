@@ -1,6 +1,7 @@
 
 import { TrendingUp, BarChart3 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../ui/Card.tsx'
+import Select from '../../ui/Select'
 import {
     BarChart,
     Bar,
@@ -25,9 +26,9 @@ interface NetWorthChartProps {
     netWorthTimeRange: string
     netWorthChartType: 'area' | 'bar'
     showForecast: boolean
-    setNetWorthTimeRange: (range: string) => void
-    setNetWorthChartType: (type: 'area' | 'bar') => void
-    setShowForecast: (show: boolean) => void
+    onNetWorthTimeRangeChange: (range: string) => void
+    onNetWorthChartTypeChange: (type: 'area' | 'bar') => void
+    onForecastToggle: () => void
 }
 
 export default function NetWorthChart({
@@ -36,9 +37,9 @@ export default function NetWorthChart({
     netWorthTimeRange,
     netWorthChartType,
     showForecast,
-    setNetWorthTimeRange,
-    setNetWorthChartType,
-    setShowForecast
+    onNetWorthTimeRangeChange,
+    onNetWorthChartTypeChange,
+    onForecastToggle
 }: NetWorthChartProps) {
     if (!visibleWidgets.netWorth) return null
 
@@ -50,18 +51,18 @@ export default function NetWorthChart({
                         <CardTitle>Net Worth Trend</CardTitle>
                         <CardDescription>Last {netWorthTimeRange === '12M' ? '12' : netWorthTimeRange === '6M' ? '6' : '3'} months</CardDescription>
                     </div>
-                    <select
+                    <Select
                         value={netWorthTimeRange}
-                        onChange={(e) => setNetWorthTimeRange(e.target.value)}
-                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    >
-                        <option value="3M">3 Months</option>
-                        <option value="6M">6 Months</option>
-                        <option value="12M">12 Months</option>
-                    </select>
+                        onChange={onNetWorthTimeRangeChange}
+                        options={[
+                            { value: '3M', label: '3 Months' },
+                            { value: '6M', label: '6 Months' },
+                            { value: '12M', label: '12 Months' },
+                        ]}
+                    />
                     <div className="flex bg-slate-100 rounded-lg p-1 ml-2">
                         <button
-                            onClick={() => setShowForecast(!showForecast)}
+                            onClick={onForecastToggle}
                             className={`p-1 rounded ${showForecast ? 'bg-white shadow text-primary-600' : 'text-slate-500 hover:text-slate-700'}`}
                             title="Toggle Forecast"
                         >
@@ -69,14 +70,14 @@ export default function NetWorthChart({
                         </button>
                         <div className="w-px bg-slate-200 mx-1" />
                         <button
-                            onClick={() => setNetWorthChartType('area')}
+                            onClick={() => onNetWorthChartTypeChange('area')}
                             className={`p-1 rounded ${netWorthChartType === 'area' ? 'bg-white shadow text-primary-600' : 'text-slate-500 hover:text-slate-700'}`}
                             title="Area Chart"
                         >
                             <TrendingUp className="w-4 h-4" />
                         </button>
                         <button
-                            onClick={() => setNetWorthChartType('bar')}
+                            onClick={() => onNetWorthChartTypeChange('bar')}
                             className={`p-1 rounded ${netWorthChartType === 'bar' ? 'bg-white shadow text-primary-600' : 'text-slate-500 hover:text-slate-700'}`}
                             title="Bar Chart"
                         >

@@ -7,7 +7,7 @@ export function useStockHoldings() {
     return useQuery({
         queryKey: QUERY_KEYS.stockHoldings,
         queryFn: async () => {
-            const client = await createApiClient('real')
+            const client = await createApiClient()
             const res = await client.getStockHoldings()
             return res.data
         },

@@ -94,6 +94,7 @@ export interface Transaction {
   category: TransactionCategory
   description: string
   merchant?: string
+  importId?: string
   date: Date
   createdAt: Date
 }

@@ -1,27 +1,26 @@
-import React from 'react'
 import { Clock, Settings, RefreshCw } from 'lucide-react'
 
 type WidgetKey = 'stats' | 'quickActions' | 'healthScore' | 'alerts' | 'accounts' | 'netWorth' | 'allocation' | 'expenses' | 'portfolio' | 'savingsGoals' | 'cashFlow'
 
 interface DashboardHeaderProps {
     autoRefreshInterval: number
-    setAutoRefreshInterval: React.Dispatch<React.SetStateAction<number>>
+    onAutoRefreshIntervalChange: (interval: number) => void
     showCustomizeMenu: boolean
-    setShowCustomizeMenu: (show: boolean) => void
+    onCustomizeMenuToggle: () => void
     visibleWidgets: Record<WidgetKey, boolean>
     toggleWidget: (key: WidgetKey) => void
-    handleRefresh: () => void
+    onRefresh: () => void
     isRefreshing: boolean
 }
 
 export default function DashboardHeader({
     autoRefreshInterval,
-    setAutoRefreshInterval,
+    onAutoRefreshIntervalChange,
     showCustomizeMenu,
-    setShowCustomizeMenu,
+    onCustomizeMenuToggle,
     visibleWidgets,
     toggleWidget,
-    handleRefresh,
+    onRefresh,
     isRefreshing
 }: DashboardHeaderProps) {
     return (
@@ -36,7 +35,7 @@ export default function DashboardHeader({
                     <button
                         className={`p-2 transition-colors rounded-full hover:bg-slate-100 ${autoRefreshInterval > 0 ? 'text-primary-600 bg-primary-50' : 'text-slate-600'}`}
                         title="Auto-refresh Settings"
-                        onClick={() => setAutoRefreshInterval(prev => prev === 0 ? 5 : prev === 5 ? 15 : prev === 15 ? 30 : 0)}
+                        onClick={() => onAutoRefreshIntervalChange(autoRefreshInterval === 0 ? 5 : autoRefreshInterval === 5 ? 15 : autoRefreshInterval === 15 ? 30 : 0)}
                     >
                         <Clock className="w-5 h-5" />
                         {autoRefreshInterval > 0 && (
@@ -50,7 +49,7 @@ export default function DashboardHeader({
                 {/* Customize Toggle */}
                 <div className="relative">
                     <button
-                        onClick={() => setShowCustomizeMenu(!showCustomizeMenu)}
+                        onClick={onCustomizeMenuToggle}
                         className={`p-2 text-slate-600 hover:text-primary-600 transition-colors rounded-full hover:bg-slate-100 ${showCustomizeMenu ? 'bg-slate-100 text-primary-600' : ''}`}
                         title="Customize Dashboard"
                     >
@@ -78,7 +77,7 @@ export default function DashboardHeader({
                 </div>
 
                 <button
-                    onClick={handleRefresh}
+                    onClick={onRefresh}
                     className={`p-2 text-slate-600 hover:text-primary-600 transition-colors rounded-full hover:bg-slate-100 ${isRefreshing ? 'animate-spin' : ''}`}
                     title="Refresh Dashboard"
                 >

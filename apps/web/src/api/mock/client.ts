@@ -132,6 +132,32 @@ export function createMockApiClient(): ApiClient {
             return createSuccessResponse(transactions[index], 'Transaction updated successfully')
         },
 
+        async deleteTransaction(id: string): Promise<ApiResponse<void>> {
+            await delay()
+            const index = transactions.findIndex(t => t.id === id)
+            if (index === -1) {
+                return createErrorResponse('Transaction not found')
+            }
+            transactions.splice(index, 1)
+            return createSuccessResponse(undefined, 'Transaction deleted successfully')
+        },
+
+        async bulkCreateTransactions(transactionsData: Array<Omit<Transaction, 'id'>>): Promise<ApiResponse<Transaction[]>> {
+            await delay()
+            const newTransactions = transactionsData.map(txn => ({
+                ...txn,
+                id: `txn_${Date.now()}_${Math.random()}`
+            }))
+            transactions.push(...newTransactions)
+            return createSuccessResponse(newTransactions, 'Transactions created successfully')
+        },
+
+        async bulkDeleteTransactions(ids: string[]): Promise<ApiResponse<void>> {
+            await delay()
+            transactions = transactions.filter(t => !ids.includes(t.id))
+            return createSuccessResponse(undefined, 'Transactions deleted successfully')
+        },
+
         // Budgets
         async getBudgets(): Promise<ApiResponse<Budget[]>> {
             await delay()
@@ -192,6 +218,23 @@ export function createMockApiClient(): ApiClient {
             }
 
             return createSuccessResponse(stats)
+        },
+
+        // Data Import/Export
+        async uploadCSV(_file: File): Promise<ApiResponse<{ importId: string; previewData: Transaction[] }>> {
+            await delay()
+            // Mock CSV upload - return preview of first 5 transactions
+            const previewData = transactions.slice(0, 5)
+            const importId = `import_${Date.now()}`
+            return createSuccessResponse(
+                { importId, previewData },
+                'CSV uploaded successfully'
+            )
+        },
+
+        async deleteImport(_importId: string): Promise<ApiResponse<void>> {
+            await delay()
+            return createSuccessResponse(undefined, 'Import deleted successfully')
         },
 
         // AI Chat (mock implementation)

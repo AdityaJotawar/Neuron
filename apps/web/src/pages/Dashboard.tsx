@@ -1,10 +1,15 @@
-import { useDashboard } from '@/hooks'
+import {
+  useDashboardData,
+  useDashboardWidgets,
+  useDashboardCharts,
+  useDashboardModals,
+  useDashboardRefresh,
+} from '@/hooks'
 import AccountDetailsModal from '@/components/features/accounts/AccountDetailsModal'
 import TransactionFormModal from '@/components/features/transactions/TransactionFormModal'
 import {
   DashboardHeader,
   StatsOverview,
-  AccountsOverview,
   QuickActionsPanel,
   FinancialHealthScore,
   AlertsPanel,
@@ -12,11 +17,22 @@ import {
   CashFlowCalendar,
   ChartsGrid,
 } from '@/components/features/dashboard'
+import AccountsOverview from '@/components/features/dashboard/widgets/AccountsOverview'
+import {
+  financialHealthScore,
+  dashboardAlerts,
+  savingsGoals,
+  cashFlowCalendarData,
+} from '@/api/mock/data/mockDashboard'
 
 export default function Dashboard() {
-  const dash = useDashboard()
+  const data = useDashboardData()
+  const widgets = useDashboardWidgets()
+  const charts = useDashboardCharts(data)
+  const modals = useDashboardModals(data)
+  const refresh = useDashboardRefresh()
 
-  if (dash.isLoading) {
+  if (data.isLoading) {
     return (
       <div className="pt-16">
         <div className="max-w-[1440px] mx-auto px-8 py-8">
@@ -31,7 +47,7 @@ export default function Dashboard() {
     )
   }
 
-  if (!dash.accounts || dash.accounts.length === 0) {
+  if (!data.accounts || data.accounts.length === 0) {
     return (
       <div className="pt-16">
         <div className="max-w-[1440px] mx-auto px-8 py-8">
@@ -48,112 +64,117 @@ export default function Dashboard() {
       <div className="max-w-[1440px] mx-auto px-8 py-8">
 
         <DashboardHeader
-          autoRefreshInterval={dash.autoRefreshInterval}
-          setAutoRefreshInterval={dash.setAutoRefreshInterval}
-          showCustomizeMenu={dash.showCustomizeMenu}
-          setShowCustomizeMenu={dash.setShowCustomizeMenu}
-          visibleWidgets={dash.visibleWidgets}
-          toggleWidget={dash.toggleWidget}
-          handleRefresh={dash.handleRefresh}
-          isRefreshing={dash.isRefreshing}
+          autoRefreshInterval={refresh.autoRefreshInterval}
+          onAutoRefreshIntervalChange={refresh.onAutoRefreshIntervalChange}
+          showCustomizeMenu={widgets.showCustomizeMenu}
+          onCustomizeMenuToggle={() => widgets.setShowCustomizeMenu(!widgets.showCustomizeMenu)}
+          visibleWidgets={widgets.visibleWidgets}
+          toggleWidget={widgets.toggleWidget}
+          onRefresh={refresh.onRefresh}
+          isRefreshing={refresh.isRefreshing}
         />
 
         <StatsOverview
-          visibleWidgets={{ stats: dash.visibleWidgets.stats }}
-          stats={dash.stats}
-          statSparklineData={dash.statSparklineData}
-          setShowTransactionModal={dash.setShowTransactionModal}
+          visibleWidgets={{ stats: widgets.visibleWidgets.stats }}
+          stats={data.stats || {
+            netWorth: 0,
+            netWorthChange: 0,
+            totalAssets: 0,
+            assetsChange: 0,
+            totalLiabilities: 0,
+            liabilitiesChange: 0,
+            monthlyCashFlow: 0,
+          }}
+          statSparklineData={data.statSparklineData}
+          onAddTransaction={modals.onTransactionModalOpen}
         />
 
         <AccountsOverview
-          visibleWidgets={{ accounts: dash.visibleWidgets.accounts }}
-          accounts={dash.accounts}
-          setSelectedAccount={dash.setSelectedAccount}
-          setIsModalOpen={dash.setIsModalOpen}
+          visibleWidgets={{ accounts: widgets.visibleWidgets.accounts }}
+          accounts={data.accounts}
+          onAccountSelect={modals.onAccountSelect}
+          onAccountModalOpen={modals.onAccountModalOpen}
         />
 
         {/* Quick Actions and Health Score Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {dash.visibleWidgets.quickActions && (
+          {widgets.visibleWidgets.quickActions && (
             <QuickActionsPanel
-              onAddTransaction={() => dash.setShowTransactionModal(true)}
+              onAddTransaction={modals.onTransactionModalOpen}
               onTransfer={() => console.log('Transfer funds')}
               onAddInvestment={() => console.log('Add investment')}
               onPayBill={() => console.log('Pay bill')}
               onSetGoal={() => console.log('Set goal')}
             />
           )}
-          {dash.visibleWidgets.healthScore && (
+          {widgets.visibleWidgets.healthScore && (
             <FinancialHealthScore
-              overall={dash.financialHealthScore.overall}
-              subScores={dash.financialHealthScore.subScores}
-              recommendations={dash.financialHealthScore.recommendations}
-              benchmark={dash.financialHealthScore.benchmark}
+              overall={financialHealthScore.overall}
+              subScores={financialHealthScore.subScores}
+              recommendations={financialHealthScore.recommendations}
+              benchmark={financialHealthScore.benchmark}
             />
           )}
         </div>
 
         {/* Alerts Panel */}
-        {dash.visibleWidgets.alerts && (
+        {widgets.visibleWidgets.alerts && (
           <div className="mb-8">
-            <AlertsPanel alerts={dash.dashboardAlerts} maxDisplay={4} />
+            <AlertsPanel alerts={dashboardAlerts} maxDisplay={4} />
           </div>
         )}
 
         {/* Savings Goals and Cash Flow Calendar */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {dash.visibleWidgets.savingsGoals && (
-            <SavingsGoalsWidget goals={dash.savingsGoals} maxDisplay={4} />
+          {widgets.visibleWidgets.savingsGoals && (
+            <SavingsGoalsWidget goals={savingsGoals} maxDisplay={4} />
           )}
-          {dash.visibleWidgets.cashFlow && (
-            <CashFlowCalendar events={dash.cashFlowCalendarData} />
+          {widgets.visibleWidgets.cashFlow && (
+            <CashFlowCalendar events={cashFlowCalendarData} />
           )}
         </div>
 
         <ChartsGrid
           visibleWidgets={{
-            netWorth: dash.visibleWidgets.netWorth,
-            allocation: dash.visibleWidgets.allocation,
-            expenses: dash.visibleWidgets.expenses,
-            portfolio: dash.visibleWidgets.portfolio,
+            netWorth: widgets.visibleWidgets.netWorth,
+            allocation: widgets.visibleWidgets.allocation,
+            expenses: widgets.visibleWidgets.expenses,
+            portfolio: widgets.visibleWidgets.portfolio,
           }}
-          filteredNetWorthData={dash.filteredNetWorthData}
-          netWorthTimeRange={dash.netWorthTimeRange}
-          netWorthChartType={dash.netWorthChartType}
-          showForecast={dash.showForecast}
-          setNetWorthTimeRange={dash.setNetWorthTimeRange}
-          setNetWorthChartType={dash.setNetWorthChartType}
-          setShowForecast={dash.setShowForecast}
-          assetAllocationData={dash.assetAllocationData}
-          monthlyExpensesData={dash.monthlyExpensesData}
-          filteredPortfolioData={dash.filteredPortfolioData}
-          portfolioTimeRange={dash.portfolioTimeRange}
-          portfolioChartType={dash.portfolioChartType}
-          setPortfolioTimeRange={dash.setPortfolioTimeRange}
-          setPortfolioChartType={dash.setPortfolioChartType}
+          filteredNetWorthData={charts.filteredNetWorthData}
+          netWorthTimeRange={charts.netWorthTimeRange}
+          netWorthChartType={charts.netWorthChartType}
+          showForecast={charts.showForecast}
+          setNetWorthTimeRange={charts.onNetWorthTimeRangeChange}
+          setNetWorthChartType={charts.onNetWorthChartTypeChange}
+          setShowForecast={charts.onForecastToggle}
+          assetAllocationData={charts.assetAllocationData}
+          monthlyExpensesData={charts.monthlyExpensesData}
+          filteredPortfolioData={charts.filteredPortfolioData}
+          portfolioTimeRange={charts.portfolioTimeRange}
+          portfolioChartType={charts.portfolioChartType}
+          setPortfolioTimeRange={charts.onPortfolioTimeRangeChange}
+          setPortfolioChartType={charts.onPortfolioChartTypeChange}
         />
       </div>
 
-      {dash.selectedAccount && (
+      {modals.selectedAccount && (
         <AccountDetailsModal
-          account={dash.selectedAccount}
-          transactions={dash.selectedAccountTransactions}
-          holdings={dash.selectedAccountHoldings}
-          isOpen={dash.isModalOpen}
-          onClose={() => {
-            dash.setIsModalOpen(false)
-            dash.setSelectedAccount(null)
-          }}
+          account={modals.selectedAccount}
+          transactions={modals.selectedAccountTransactions}
+          holdings={modals.selectedAccountHoldings}
+          isOpen={modals.isAccountModalOpen}
+          onClose={modals.onAccountModalClose}
         />
       )}
 
-      {dash.showTransactionModal && (
+      {modals.isTransactionModalOpen && (
         <TransactionFormModal
-          isOpen={dash.showTransactionModal}
-          onClose={() => dash.setShowTransactionModal(false)}
+          isOpen={modals.isTransactionModalOpen}
+          onClose={modals.onTransactionModalClose}
           onSave={async (transactionData) => {
             console.log('New transaction:', transactionData)
-            dash.setShowTransactionModal(false)
+            modals.onTransactionModalClose()
           }}
           transaction={undefined}
         />

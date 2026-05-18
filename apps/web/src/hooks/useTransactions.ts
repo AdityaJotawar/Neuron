@@ -8,7 +8,7 @@ export function useTransactions() {
     return useQuery({
         queryKey: QUERY_KEYS.transactions,
         queryFn: async () => {
-            const client = await createApiClient('real')
+            const client = await createApiClient()
             const res = await client.getTransactions()
             return res.data
         },

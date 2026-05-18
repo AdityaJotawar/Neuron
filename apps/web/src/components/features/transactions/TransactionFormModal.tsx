@@ -3,6 +3,7 @@ import Modal from '../../ui/Modal'
 import Button from '../../ui/Button'
 import Input from '../../ui/Input'
 import Label from '../../ui/Label'
+import Select from '../../ui/Select'
 import type { Transaction, TransactionType, TransactionCategory } from '../../../types'
 
 interface TransactionFormModalProps {
@@ -68,16 +69,13 @@ export default function TransactionFormModal({ isOpen, onClose, onSave, transact
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <Label htmlFor="type">Type</Label>
-                    <select
+                    <Select
                         id="type"
                         value={formData.type}
-                        onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as TransactionType }))}
-                        className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    >
-                        {transactionTypes.map(type => (
-                            <option key={type.value} value={type.value}>{type.label}</option>
-                        ))}
-                    </select>
+                        onChange={(value) => setFormData(prev => ({ ...prev, type: value as TransactionType }))}
+                        options={transactionTypes}
+                        className="mt-1"
+                    />
                 </div>
 
                 <div>
@@ -95,16 +93,13 @@ export default function TransactionFormModal({ isOpen, onClose, onSave, transact
 
                 <div>
                     <Label htmlFor="category">Category</Label>
-                    <select
+                    <Select
                         id="category"
                         value={formData.category}
-                        onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as TransactionCategory }))}
-                        className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    >
-                        {transactionCategories.map(category => (
-                            <option key={category.value} value={category.value}>{category.label}</option>
-                        ))}
-                    </select>
+                        onChange={(value) => setFormData(prev => ({ ...prev, category: value as TransactionCategory }))}
+                        options={transactionCategories}
+                        className="mt-1"
+                    />
                 </div>
 
                 <div>

@@ -25,17 +25,17 @@ export class AIService {
 
         // Analyze query intent
         if (lowerQuery.includes('spend') || lowerQuery.includes('expense') || lowerQuery.includes('spent')) {
-            return this.generateSpendingAnalysis(query, context)
+            return this.generateSpendingAnalysis(query, _context)
         } else if (lowerQuery.includes('balance') || lowerQuery.includes('account')) {
-            return this.generateAccountBalanceResponse(query, context)
+            return this.generateAccountBalanceResponse(query, _context)
         } else if (lowerQuery.includes('budget')) {
-            return this.generateBudgetStatusResponse(query, context)
+            return this.generateBudgetStatusResponse(query, _context)
         } else if (lowerQuery.includes('net worth') || lowerQuery.includes('worth')) {
-            return this.generateNetWorthResponse(query, context)
+            return this.generateNetWorthResponse(query, _context)
         } else if (lowerQuery.includes('investment') || lowerQuery.includes('portfolio')) {
-            return this.generateInvestmentResponse(query, context)
+            return this.generateInvestmentResponse(query, _context)
         } else {
-            return this.generateGeneralResponse(query, context)
+            return this.generateGeneralResponse(query, _context)
         }
     }
 

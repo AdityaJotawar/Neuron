@@ -22,14 +22,14 @@ interface StatsOverviewProps {
     visibleWidgets: { stats: boolean }
     stats: StatsData
     statSparklineData: SparklineData
-    setShowTransactionModal: (show: boolean) => void
+    onAddTransaction: () => void
 }
 
 export default function StatsOverview({
     visibleWidgets,
     stats,
     statSparklineData,
-    setShowTransactionModal
+    onAddTransaction
 }: StatsOverviewProps) {
     if (!visibleWidgets.stats) return null
 
@@ -86,7 +86,7 @@ export default function StatsOverview({
                 trend="up"
                 actions={
                     <button
-                        onClick={() => setShowTransactionModal(true)}
+                        onClick={onAddTransaction}
                         className="flex items-center gap-1 text-xs font-medium text-primary-600 hover:text-primary-700 bg-primary-50 px-2 py-1 rounded-full"
                     >
                         <Plus className="w-3 h-3" /> Add

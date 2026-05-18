@@ -6,15 +6,15 @@ import type { Account } from '@/types'
 interface AccountsOverviewProps {
     visibleWidgets: { accounts: boolean }
     accounts: Account[]
-    setSelectedAccount: (account: Account | null) => void
-    setIsModalOpen: (open: boolean) => void
+    onAccountSelect: (account: Account) => void
+    onAccountModalOpen: () => void
 }
 
 export default function AccountsOverview({
     visibleWidgets,
     accounts,
-    setSelectedAccount,
-    setIsModalOpen
+    onAccountSelect,
+    onAccountModalOpen
 }: AccountsOverviewProps) {
     const navigate = useNavigate()
 
@@ -44,8 +44,8 @@ export default function AccountsOverview({
                         tradingMetrics={account.tradingMetrics}
                         propertyMetrics={account.propertyMetrics}
                         onClick={() => {
-                            setSelectedAccount(account)
-                            setIsModalOpen(true)
+                            onAccountSelect(account)
+                            onAccountModalOpen()
                         }}
                     />
                 ))}

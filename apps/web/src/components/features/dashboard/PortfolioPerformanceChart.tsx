@@ -1,6 +1,7 @@
 
 import { BarChart3, LineChart as LineChartIcon } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../ui/Card.tsx'
+import Select from '../../ui/Select'
 import {
     BarChart,
     Bar,
@@ -23,8 +24,8 @@ interface PortfolioPerformanceChartProps {
     filteredPortfolioData: PortfolioData[]
     portfolioTimeRange: string
     portfolioChartType: 'line' | 'bar'
-    setPortfolioTimeRange: (range: string) => void
-    setPortfolioChartType: (type: 'line' | 'bar') => void
+    onPortfolioTimeRangeChange: (range: string) => void
+    onPortfolioChartTypeChange: (type: 'line' | 'bar') => void
 }
 
 export default function PortfolioPerformanceChart({
@@ -32,8 +33,8 @@ export default function PortfolioPerformanceChart({
     filteredPortfolioData,
     portfolioTimeRange,
     portfolioChartType,
-    setPortfolioTimeRange,
-    setPortfolioChartType
+    onPortfolioTimeRangeChange,
+    onPortfolioChartTypeChange
 }: PortfolioPerformanceChartProps) {
     if (!visibleWidgets.portfolio) return null
 
@@ -46,26 +47,26 @@ export default function PortfolioPerformanceChart({
                         <CardDescription>Last {portfolioTimeRange === '12M' ? '12' : portfolioTimeRange === '6M' ? '6' : '3'} months</CardDescription>
                     </div>
                     <div className="flex items-center gap-4">
-                        <select
+                        <Select
                             value={portfolioTimeRange}
-                            onChange={(e) => setPortfolioTimeRange(e.target.value)}
-                            className="px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        >
-                            <option value="12M">12 Months</option>
-                            <option value="6M">6 Months</option>
-                            <option value="3M">3 Months</option>
-                        </select>
+                            onChange={onPortfolioTimeRangeChange}
+                            options={[
+                                { value: '12M', label: '12 Months' },
+                                { value: '6M', label: '6 Months' },
+                                { value: '3M', label: '3 Months' },
+                            ]}
+                        />
                         <span className="text-2xl font-semibold text-emerald-600 font-mono">+18.3%</span>
                         <div className="flex bg-slate-100 rounded-lg p-1">
                             <button
-                                onClick={() => setPortfolioChartType('line')}
+                                onClick={() => onPortfolioChartTypeChange('line')}
                                 className={`p-1 rounded ${portfolioChartType === 'line' ? 'bg-white shadow text-primary-600' : 'text-slate-500 hover:text-slate-700'}`}
                                 title="Line Chart"
                             >
                                 <LineChartIcon className="w-4 h-4" />
                             </button>
                             <button
-                                onClick={() => setPortfolioChartType('bar')}
+                                onClick={() => onPortfolioChartTypeChange('bar')}
                                 className={`p-1 rounded ${portfolioChartType === 'bar' ? 'bg-white shadow text-primary-600' : 'text-slate-500 hover:text-slate-700'}`}
                                 title="Bar Chart"
                             >
