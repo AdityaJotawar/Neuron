@@ -53,7 +53,7 @@ export interface ApiClient {
 
 // Factory function to create API client
 export async function createApiClient(): Promise<ApiClient> {
-    const mode = import.meta.env.VITE_API_MODE ?? 'mock'
+    const mode = (typeof window !== 'undefined' ? window.localStorage.getItem('api_mode') : null) ?? import.meta.env.VITE_API_MODE ?? 'mock'
     
     if (mode === 'real') {
         const { createRealApiClient } = await import('./real/client')
